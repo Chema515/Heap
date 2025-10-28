@@ -153,6 +153,133 @@ public:
 
 #endif // EMERGENCIA_HEAP_H
 
+#include <limits> // Para limpiar el buffer
+
+// === Integrante 4: Interfaz de simulación ===
+
+// Función auxiliar para leer enteros y limpiar el buffer de entrada
+int leerOpcion() {
+    int opcion;
+    while (!(cin >> opcion)) {
+        cout << "Entrada inválida. Por favor, ingrese un número: ";
+        cin.clear();
+        cin.ignore(numeric_limits<streamsize>::max(), '\n');
+    }
+    cin.ignore(numeric_limits<streamsize>::max(), '\n'); // Limpia el buffer
+    return opcion;
+}
+
+void menu_zona(LeftistHeap& zona, const string& nombre_zona) {
+    int opcion;
+    do {
+        cout << "\n=== GESTIÓN DE INCIDENTES: " << nombre_zona << " ===" << endl;
+        cout << "1. Insertar nuevo Incidente" << endl;
+        cout << "2. Atender incidente de mayor prioridad" << endl;
+        cout << "3. Visualizar incidente más urgente" << endl;
+        cout << "4. Regresar al Menú Principal" << endl;
+        cout << "Seleccione una opción: ";
+
+        opcion = leerOpcion();
+
+        switch (opcion) {
+            case 1: { // Insertar Incidente
+                int p;
+                string d, u;
+                cout << "\n[NUEVO INCIDENTE]" << endl;
+                cout << "Prioridad (1-100, 100 es max): "; p = leerOpcion();
+                cout << "Descripción: "; getline(cin, d);
+                cout << "Ubicación: "; getline(cin, u);
+                
+                // Creación dinámica del incidente (será liberado por el destructor del Nodo)
+                Incidente* nuevo_inc = new Incidente(p, d, u); 
+                zona.insertar(nuevo_inc);
+                break;
+            }
+            case 2: // Atender Incidente
+                zona.extraer_max_prioridad();
+                break;
+            case 3: // Visualizar Incidente
+                zona.visualizar_urgente();
+                break;
+            case 4:
+                cout << "Regresando al menú principal..." << endl;
+                break;
+            default:
+                cout << "Opción no válida. Intente de nuevo." << endl;
+        }
+    } while (opcion != 4);
+}
+
+void menu_principal() {
+    // Inicialización de las dos zonas de atención (dos Leftist Heaps)
+    LeftistHeap zonaA;
+    LeftistHeap zonaB;
+    LeftistHeap zonaFusionada; // Para almacenar el resultado de la fusión
+    
+    int opcion;
+
+    // Simulación de carga inicial para probar las estructuras
+    zonaA.insertar(new Incidente(50, "Corte de luz sector norte", "ZN-1A"));
+    zonaB.insertar(new Incidente(90, "Incendio reportado", "ZB-2C"));
+    zonaA.insertar(new Incidente(75, "Accidente de tráfico menor", "ZN-3D"));
+    zonaB.insertar(new Incidente(60, "Fuga de gas leve", "ZB-4E"));
+
+    do {
+        cout << "\n==========================================" << endl;
+        cout << "   SISTEMA DE GESTIÓN DE EMERGENCIAS (Leftist Heap) " << endl;
+        cout << "==========================================" << endl;
+        cout << "1. Gestionar Zona A" << endl;
+        cout << "2. Gestionar Zona B" << endl;
+        cout << "3. Fusionar Zonas A y B" << endl;
+        
+        if (!zonaFusionada.estaVacio()) {
+             cout << "4. Atender/Visualizar Incidente en ZONA FUSIONADA" << endl;
+        }
+
+        cout << "0. Salir" << endl;
+        cout << "Seleccione una opción: ";
+
+        opcion = leerOpcion();
+
+        switch (opcion) {
+            case 1: 
+                menu_zona(zonaA, "ZONA A");
+                break;
+            case 2: 
+                menu_zona(zonaB, "ZONA B");
+                break;
+            case 3: { // Fusión de Zonas (Integrante 3)
+                if (zonaFusionada.estaVacio()) {
+                     cout << "\n*** FUSIONANDO ZONAS A y B... ***" << endl;
+                     zonaFusionada = LeftistHeap::fusionar_zonas(zonaA, zonaB);
+                     cout << "Zonas A y B fusionadas en ZONA FUSIONADA." << endl;
+                     cout << "Zona A y Zona B están ahora vacías." << endl;
+                } else {
+                    cout << "Ya existe una Zona Fusionada. Atiéndala antes de fusionar nuevamente." << endl;
+                }
+                break;
+            }
+            case 4: 
+                if (!zonaFusionada.estaVacio()) {
+                    menu_zona(zonaFusionada, "ZONA FUSIONADA");
+                } else {
+                    cout << "Opción no válida." << endl;
+                }
+                break;
+            case 0:
+                cout << "Saliendo del sistema. ¡Adiós!" << endl;
+                break;
+            default:
+                cout << "Opción no válida. Intente de nuevo." << endl;
+        }
+    } while (opcion != 0);
+}
+
+int main() {
+    menu_principal();
+    return 0;
+}
+
 
 
 
