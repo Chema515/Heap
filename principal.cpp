@@ -96,5 +96,40 @@ public:
         cout << "\n Incidente insertado con Prioridad: " << inc->prioridad << endl;
     }
 
+// === Integrante 2: Atención de incidentes ===
+    
+    // Atender el incidente de mayor prioridad (Extraer Máx)
+    Incidente* extraer_max_prioridad() {
+        if (!raiz) {
+            cout << "Error: No hay incidentes para atender." << endl;
+            return nullptr;
+        }
+
+        Nodo* nodo_atendido = raiz;
+        Incidente* inc_atendido = nodo_atendido->incidente;
+        
+        // 1. Fusionar los subárboles izquierdo y derecho para formar la nueva raíz
+        raiz = merge(raiz->izquierda, raiz->derecha); 
+        
+        // 2. Separar el Incidente del Nodo antes de liberar el Nodo (evita doble delete)
+        nodo_atendido->incidente = nullptr; 
+        delete nodo_atendido; // El destructor del Nodo ya no elimina el Incidente
+        
+        cout << "\n INCIDENTE ATENDIDO (Mayor Prioridad):" << endl;
+        inc_atendido->mostrarDetalles();
+        return inc_atendido;
+    }
+
+    // Visualizar el incidente más urgente sin eliminarlo (Peek Máx)
+    Incidente* visualizar_urgente() const {
+        if (!raiz) {
+            cout << "La zona está libre. No hay incidentes urgentes." << endl;
+            return nullptr;
+        }
+        cout << "\n INCIDENTE MÁS URGENTE (sin atender):" << endl;
+        raiz->incidente->mostrarDetalles();
+        return raiz->incidente;
+    }
+
 
 
