@@ -130,6 +130,30 @@ public:
         raiz->incidente->mostrarDetalles();
         return raiz->incidente;
     }
+// === Integrante 3: Simulación de Fusión de Zonas ===
+
+    // Operación de clase para fusionar dos Heaps (Zonas)
+    static LeftistHeap fusionar_zonas(LeftistHeap& zona1, LeftistHeap& zona2) {
+        LeftistHeap nueva_zona;
+        
+        // Realiza la fusión usando el método 'merge' e invalida las raíces originales
+        nueva_zona.raiz = zona1.merge(zona1.raiz, zona2.raiz); 
+        
+        // Es crucial que las zonas originales queden "vacías" de sus nodos
+        // para que la nueva zona se encargue de la memoria.
+        zona1.raiz = nullptr; 
+        zona2.raiz = nullptr;
+        
+        return nueva_zona;
+    }
+    
+    // Función auxiliar para simulación
+    bool estaVacio() const { return raiz == nullptr; }
+};
+
+#endif // EMERGENCIA_HEAP_H
+
+
 
 
 
