@@ -88,4 +88,13 @@ public:
         destruir(n->derecha);
         delete n;
     }
+// === Integrante 1: Entrada de incidentes (Insertar) ===
+public:
+    void insertar(Incidente* inc) {
+        Nodo* nuevo_nodo = new Nodo(inc);
+        raiz = merge(raiz, nuevo_nodo); 
+        cout << "\n Incidente insertado con Prioridad: " << inc->prioridad << endl;
+    }
+
+
 
