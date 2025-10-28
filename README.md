@@ -1,2 +1,2 @@
 # Heap
- Leftist Heap y Heap Sesgado
+Heap Sesgado
